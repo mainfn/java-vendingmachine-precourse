@@ -3,6 +3,8 @@ package vendingmachine.domain.coin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import vendingmachine.domain.money.Money;
 
 public enum Coin {
   COIN_500(500),
@@ -29,6 +31,25 @@ public enum Coin {
     return variants.get(amount);
   }
 
+  public static Optional<Coin> exchange(final Money money) {
+    if (money.isEqualOrMoreThan(COIN_500.amount)) {
+      money.decrease(COIN_500.amount);
+      return Optional.of(COIN_500);
+    }
+    if (money.isEqualOrMoreThan(COIN_100.amount)) {
+      money.decrease(COIN_100.amount);
+      return Optional.of(COIN_100);
+    }
+    if (money.isEqualOrMoreThan(COIN_50.amount)) {
+      money.decrease(COIN_50.amount);
+      return Optional.of(COIN_50);
+    }
+    if (money.isEqualOrMoreThan(COIN_10.amount)) {
+      money.decrease(COIN_10.amount);
+      return Optional.of(COIN_10);
+    }
+    return Optional.empty();
+  }
 
   public int getAmount() {
     return amount;
