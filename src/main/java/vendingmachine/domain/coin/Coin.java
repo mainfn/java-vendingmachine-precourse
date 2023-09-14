@@ -25,10 +25,14 @@ public enum Coin {
   }
 
   public static Coin of(final int amount) {
-    if (!variants.contains(amount)) {
-      throw new IllegalArgumentException("잘못된 코인 단위를 입력 하셨습니다.");
-    }
-    return variants.get(amount);
+    return findByAmount(amount)
+        .orElseThrow(() -> new IllegalArgumentException("잘못된 코인 단위를 입력 하셨습니다."));
+  }
+
+  private static Optional<Coin> findByAmount(final int amount) {
+    return variants.stream()
+        .filter(v -> v.amount == amount)
+        .findFirst();
   }
 
   public static Optional<Coin> exchange(final Money money) {

@@ -21,6 +21,7 @@ public final class Item {
   ) {
     this.name = name;
     this.price = price;
+    this.quantity = quantity;
   }
 
   public static Item of(
@@ -38,7 +39,7 @@ public final class Item {
       throw new IllegalArgumentException("상품의 최소 가격은 100원 입니다.");
     }
 
-    if (price.isDivisibleBy(PRICE_DIVISOR)) {
+    if (!price.isDivisibleBy(PRICE_DIVISOR)) {
       throw new IllegalArgumentException("상품의 가격은 반드시 10으로 나누어 떨어져야 합니다.");
     }
   }
@@ -47,5 +48,26 @@ public final class Item {
     if (quantity < 0) {
       throw new IllegalArgumentException("상품의 수량은 음수가 될 수 없습니다.");
     }
+  }
+
+  public void buy(final Money money) {
+    validateQuantity(quantity--);
+    money.decrease(price);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getQuantity() {
+    return quantity;
+  }
+
+  public Money getPrice() {
+    return price;
+  }
+
+  public void decreaseQuantity() {
+    quantity--;
   }
 }

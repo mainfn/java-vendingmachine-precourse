@@ -55,7 +55,6 @@ public final class InputView {
     final String name = split[0];
     final Money price = Money.of(Integer.parseInt(split[1]));
     final int quantity = Integer.parseInt(split[2]);
-
     return Item.of(name, price, quantity);
   }
 
@@ -70,7 +69,10 @@ public final class InputView {
     }
   }
 
-  public String inputItemName() {
+  public String inputItemName(final int remainedAmount) {
+    System.out.println();
+    System.out.println("투입 금액: " + remainedAmount + "원");
+    System.out.println("구매할 상품명을 입력해 주세요.");
     return readLine();
   }
 

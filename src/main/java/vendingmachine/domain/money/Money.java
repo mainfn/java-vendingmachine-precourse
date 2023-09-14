@@ -48,4 +48,8 @@ public final class Money {
   public boolean isDivisibleBy(final Money other) {
     return amount % other.amount == 0;
   }
+
+  public int getAmount() {
+    return amount;
+  }
 }

@@ -2,6 +2,10 @@ package vendingmachine.domain.coin;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import vendingmachine.domain.money.Money;
 
 public final class Coins {
 
@@ -33,5 +37,39 @@ public final class Coins {
     return coinsMap;
   }
 
+  public Changes exchangeAll(final Money money) {
+    final LinkedHashMap<Coin, Integer> changesMap = createCoinsMap();
+
+    while (true) {
+      final Optional<Coin> coin = getMostCoinEqualOrMoreThan(money);
+      if (!coin.isPresent()) {
+        break;
+      }
+      final int prevCount = changesMap.get(coin.get());
+      changesMap.replace(coin.get(), prevCount + 1);
+      money.decrease(coin.get().getAmount());
+    }
+
+    return Changes.of(changesMap);
+  }
+
+  private Optional<Coin> getMostCoinEqualOrMoreThan(final Money money) {
+    return coinsMap.entrySet()
+        .stream()
+        // 1개 이상 존재하는 코인만 필터링
+        .filter(entry -> entry.getValue() > 0)
+        // 보유 금액이 코인보다 많은지 -> 잔액이 490원이고 잔돈이 500원이면 변환 불가하기 때문
+        .filter(entry -> money.isEqualOrMoreThan(entry.getKey().getAmount()))
+        .map(Entry::getKey)
+        .findFirst();
+  }
+
+  @Override
+  public String toString() {
+    return coinsMap.entrySet().stream()
+        .sorted((c1, c2) -> c2.getKey().getAmount() - c1.getKey().getAmount())
+        .map(entry -> entry.getKey().getAmount() + "원 - " + entry.getValue() + "개")
+        .collect(Collectors.joining("\n"));
+  }
 
 }
